@@ -80,7 +80,7 @@ class LoginViewController: UIViewController {
                         let dataArray = try NSJSONSerialization.JSONObjectWithData(urlData!, options: .AllowFragments) as? [Dictionary<String, AnyObject>]
                         
                         
-                        if let cod = dataArray![0]["cod"] as? NSInteger {
+                        if let cod = dataArray![0]["cod"] as? NSString {
                             
                         }
                         
@@ -88,16 +88,19 @@ class LoginViewController: UIViewController {
                             
                         }
                         
-                        if let nombre = dataArray![0]["nombre"] as? NSInteger {
+                        if let nombre = dataArray![0]["nombre"] as? String {
                             
                         }
                         
-                        
                         //var error: NSError?
                         
-                        let jsonData = try NSJSONSerialization.JSONObjectWithData(urlData!, options: .MutableContainers) as? NSDictionary
-                        print(jsonData)
-                        let cod:NSInteger = (jsonData!.valueForKey("cod") as? NSInteger)!
+                      let jsonData = try! NSJSONSerialization.JSONObjectWithData(urlData!, options: .AllowFragments) as? [[String:AnyObject]] // <-- i have change it to be an aray of dictionary
+                      
+                      // here you have to downcast the value of 'NSTaggedPointerString' to a doubeleValue
+                      // cod is coming as 'NSTaggedPointerString'
+                      let codValue = (jsonData!.last!["cod"] as! NSString).doubleValue
+                      let cod = Int(codValue)
+
                         
                         //[jsonData[@"success"] integerValue];
                         
@@ -121,41 +124,34 @@ class LoginViewController: UIViewController {
                             } else {
                                 error_msg = "Unknown Error"
                             }
-                            let alertView:UIAlertView = UIAlertView()
-                            alertView.title = "Sign in Failed!"
-                            alertView.message = error_msg as String
-                            alertView.delegate = self
-                            alertView.addButtonWithTitle("OK")
-                            alertView.show()
-                            
+                          // this how you should present alert in swift
+                          // make a func of alertView and pass it here to be more dry 
+                          
+                          let alertView = UIAlertController(title: "Sign in Failed!", message: "\(error_msg)", preferredStyle: .Alert)
+                          alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+                          presentViewController(alertView, animated: true, completion: nil)
                         }
                         
                     } else {
-                        let alertView:UIAlertView = UIAlertView()
-                        alertView.title = "Sign in Failed!"
-                        alertView.message = "Connection Failed"
-                        alertView.delegate = self
-                        alertView.addButtonWithTitle("OK")
-                        alertView.show()
+                      //newer style
+                      let alertView = UIAlertController(title: "Sign in Failed!", message: "Connection Failed", preferredStyle: .Alert)
+                      alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+                      presentViewController(alertView, animated: true, completion: nil)
                     }
                 } else {
-                    let alertView:UIAlertView = UIAlertView()
-                    alertView.title = "Sign in Failed!"
-                    alertView.message = "Connection Failure"
-                    if let error = reponseError {
-                        alertView.message = (error.localizedDescription)
-                    }
-                    alertView.delegate = self
-                    alertView.addButtonWithTitle("OK")
-                    alertView.show()
+                  //newer style
+                  var mesg = "Connection Failure"
+                  if let error = reponseError {
+                    mesg = (error.localizedDescription)
+                  }
+                  let alertView = UIAlertController(title: "Sign in Failed!", message: mesg, preferredStyle: .Alert)
+                  alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+                  presentViewController(alertView, animated: true, completion: nil)
                 }
             } catch {
-                let alertView:UIAlertView = UIAlertView()
-                alertView.title = "Sign in Failed!"
-                alertView.message = "Server Error"
-                alertView.delegate = self
-                alertView.addButtonWithTitle("OK")
-                alertView.show()
+              let alertView = UIAlertController(title: "Sign in Failed!", message: "Server Error", preferredStyle: .Alert)
+              alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+              presentViewController(alertView, animated: true, completion: nil)
             }
         }
     }
