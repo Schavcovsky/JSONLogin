@@ -119,11 +119,13 @@ class LoginViewController: UIViewController {
                         } else {
                             var error_msg:NSString
                             
-                            if jsonData!["error_message"] as? NSString != nil {
-                                error_msg = jsonData!["error_message"] as! NSString
-                            } else {
-                                error_msg = "Unknown Error"
-                            }
+                          // same here check it as array of dictionary
+                          if jsonData!.last!["error_message"] as? String != nil {
+                            error_msg = jsonData!.last!["error_message"] as! String
+                          } else {
+                            error_msg = "Unknown Error"
+                          }
+                          
                           // this how you should present alert in swift
                           // make a func of alertView and pass it here to be more dry 
                           
