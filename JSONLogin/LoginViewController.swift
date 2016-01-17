@@ -96,15 +96,14 @@ class LoginViewController: UIViewController {
                         //var error: NSError?
                         
                         let jsonData = try NSJSONSerialization.JSONObjectWithData(urlData!, options: .MutableContainers) as? NSDictionary
-                        
-                        
-                        let success:NSInteger = (jsonData!.valueForKey("success") as? NSInteger)!
+                        print(jsonData)
+                        let cod:NSInteger = (jsonData!.valueForKey("cod") as? NSInteger)!
                         
                         //[jsonData[@"success"] integerValue];
                         
-                        NSLog("Success: %ld", success);
+                        NSLog("Success: %ld", cod);
                         
-                        if(success == 1)
+                        if(cod == 1)
                         {
                             NSLog("Login SUCCESS");
                             
